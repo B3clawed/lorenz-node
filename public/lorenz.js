@@ -2,11 +2,13 @@ var THREE = require('three');
 const OrbitControls = require('three-orbitcontrols')
 
 var scene, renderer, camera, controls, cube, line;
+var r = .3;
+var increasing = true;
 var a = 10,
     b = 28,
     c = 8/3,
     dt = 0,
-    x = 1,
+    x = 0.1,
     y = 0,
     z = 0;
 var points = [];
@@ -73,7 +75,17 @@ function updateLines(){
 
     points.push({x,y,z});
 
-    var material = new THREE.LineBasicMaterial( { color: 0x0000ff} );
+    if(r>=1)
+        increasing = false;
+    else if(r<=.3)
+        increasing = true;
+
+    if(increasing)
+        r+=0.001;
+    else
+        r-=0.001
+    var lineColor = new THREE.Color(r,0,0);
+    var material = new THREE.LineBasicMaterial( { color: lineColor } );
     var geometry = new THREE.Geometry();
     for(var i=points.length-1; i>=points.length-2; i--){
         var pt = points[i];
@@ -88,6 +100,15 @@ function clearScene(){
     while(scene.children.length > 0){ 
         scene.remove(scene.children[0]); 
     }
+}
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 
